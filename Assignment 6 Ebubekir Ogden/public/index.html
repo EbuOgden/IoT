@@ -1,0 +1,102 @@
+<html lang="en">
+  <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+      <title>30402.(007) - Assignment 6 - Ebubekir Ogden</title>
+      <meta charset="utf-8">
+      <meta name="author" content="Ebubekir Ogden">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+  </head>
+
+  <script>
+      function turnOnLight(){
+
+          console.log("Hello!");
+          $(document).ready(function(){
+              var turnonLight = $.ajax({
+                  url: "http://10.0.0.76:3000/lightOn",
+                  method: "POST"
+              })
+
+              turnonLight.done(function(message){
+                  $('#lightStatusPictureID').attr('src', 'lightOn.png');
+		  $('#lightStatusID').text("Light Status: On");
+                  console.log(message);
+              })
+          })
+      }
+
+      function turnOffLight(){
+
+          $(document).ready(function(){
+              var turnoffLight = $.ajax({
+                  url: "http://10.0.0.76:3000/lightOff",
+                  method: "POST"
+              })
+
+              turnoffLight.done(function(message){
+                  $('#lightStatusPictureID').attr('src', 'lightOff.png');
+                  $('#lightStatusID').text("Light Status: Off");
+		  console.log(message);
+              })
+          })
+      }
+
+  </script>
+
+  <style>
+        .centerPosition{
+            text-align: center;
+            left:50%;
+        }
+
+        .lightPicture{
+            left: 42.5%;
+        }
+
+        .lightStatus{
+            margin-top: 2.5%;
+            top: 50%;
+        }
+
+        .turnOnLightButton{
+            left: 40%;
+        }
+  </style>
+
+  <body>
+
+    <div class="container">
+
+      <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <h1 class="centerPosition"> Light Control </h1>
+
+            <div class="row">
+                <div class="lightPicture col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                    <img id="lightStatusPictureID" style="height:100px; width: 75px;" src="lightOff.png"></img>
+                </div>
+                <div class="lightStatus col-xs-2 col-sm-2 col-md-2 col-lg-2">
+                    <p id="lightStatusID">Light Status: Off</p>
+                </div>
+
+            </div>
+
+          </div>
+
+      </div>
+      <br><br>
+      <div class="row">
+          <div class="turnOnLightButton col-xs-6 col-sm-6 col-md-6 col-lg-6">
+              <button type="button" onclick="turnOnLight()" class="btn btn-success">Turn On Light</button>
+          </div>
+
+          <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+              <button type="button" onclick="turnOffLight()" class="btn btn-danger">Turn Off Light</button>
+          </div>
+
+      </div>
+    </div>
+
+  </body>
+</html>

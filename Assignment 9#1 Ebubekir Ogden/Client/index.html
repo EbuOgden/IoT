@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Real Time Humidity Data and Led</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Ebubekir Ogden">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimum-scale=1.0, height=device-height, width=device-width">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script src="socket.io.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script>
+      // wait for the DOM to be loaded
+      $(document).ready(function() {
+
+          var count = 0;
+
+          var socket = io('http://10.0.0.76:3000');
+
+          socket.on('connect', function(){
+              console.log("Connected!");
+          })
+
+          socket.emit('getData');
+
+          var temperatureData = [];
+          
+          var pressureData = []; 
+
+          var tempChart = new CanvasJS.Chart("tempChart", {
+              title: {
+                  text: "Temperature Data"
+              },
+                axisX:{
+
+                    gridThickness: 2,
+                    interval:3, 
+                    intervalType: "second",        
+                    valueFormatString: "hh m ss t", 
+                    labelAngle: -50
+                },
+              data: [{
+                  type: "line",
+                  dataPoints: temperatureData
+              }]
+          })
+
+          var presChart = new CanvasJS.Chart("predChart", {
+              title: {
+                  text: "Humidity Data",
+              },
+              axisX:{
+
+                    gridThickness: 2,
+                    interval:3, 
+                    intervalType: "second",        
+                    valueFormatString: "hh m ss t", 
+                    labelAngle: -50
+                },
+              data: [{
+                  type: "line",
+                  dataPoints: pressureData
+              }]
+          })
+
+          socket.on('data', function(message){
+              console.log(message);
+            
+              temperatureData.push({
+                  x: new Date(message.date),
+                  y: parseFloat(message.temperature, 10)
+              });
+              pressureData.push({
+                  x: new Date(message.date),
+                  y: parseFloat(message.humidity, 10)
+              });
+
+              tempChart.render();
+              presChart.render();
+
+          })
+
+      });
+
+    </script>
+
+    <style>
+        .centerPosition{
+            text-align: center;
+            left:50%;
+        }
+
+        .lightPicture{
+            left: 42.5%;
+        }
+
+        .lightStatus{
+            margin-top: 2.5%;
+            top: 50%;
+        }
+
+        .turnOnLightButton{
+            left: 40%;
+        }
+  </style>
+  </head>
+  <body>
+    <div class="container">
+
+      <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <h1 class="centerPosition"> Real Time Sensor Data with Time </h1>
+          </div>
+
+      </div>
+      
+      <div class="row">
+          <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+              <div id="tempChart" width="400px" height="200px"></div>
+          </div>
+          <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+              <div id="predChart" width="400px" height="200px"></div>
+          </div>
+
+      </div>
+    </div>
+
+  </body>
+</html>
